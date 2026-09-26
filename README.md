@@ -1,19 +1,20 @@
 # SPIN-PPI
 
-**SPIN-PPI** (**S**tructural **P**rior **In**tegration Network for protein–protein interaction prediction) is a memory-efficient framework for structure-guided protein–protein interaction (PPI) prediction through adaptive structural prior integration.
+**SPIN-PPI** (**S**tructural **P**rior **In**tegration Network for protein–protein interaction prediction) integrates five predefined residue relations through bounded, non-competitive, input-conditioned calibration for structure-guided multi-type PPI prediction.
 
-SPIN-PPI integrates complementary residue-level structural priors—including sequence adjacency, local structural neighborhoods, distance-based contacts, exposed-surface accessibility, and LRR-region regularity—and adaptively calibrates their contributions before compressing residue features into protein-level representations for downstream GraphConv-based multi-type PPI prediction.
+The five relations encode sequence adjacency, local structural neighborhoods, distance-based contacts, exposed-surface accessibility, and LRR-region regularity. Their calibrated residue features are pooled into protein-level representations for downstream GraphConv-based interaction prediction. Residue-to-protein pooling and staged training additionally support bounded-memory execution under the evaluated configuration. The individual relations are existing inputs rather than newly introduced structural descriptors; the methodological contribution lies in their calibrated integration before protein-network reasoning.
 
 This repository provides source code, training and inference scripts, configuration files, preprocessing utilities, and instructions for reproducing the experiments reported in the manuscript:
 
-> **SPIN-PPI: Adaptive structural prior integration for memory-efficient protein–protein interaction prediction**
+> **SPIN-PPI: A Structural Prior Integration Network with Bounded Input-Conditioned Calibration for Multi-Type Protein–Protein Interaction Prediction**
 
 ---
 
 ## Highlights
 
-- **Adaptive structural prior integration**  
-  SPIN-PPI learns relation-specific weights over multiple structural-prior channels instead of treating all structural cues as equally informative.
+- **Bounded, non-competitive relation calibration**
+
+  An input-conditioned scorer independently enhances or attenuates the five relation channels without cross-relation softmax normalization.
 
 - **Reduced dependence on structure-only contacts**  
   The model combines sequence continuity, local geometry, distance-based contacts, exposed-surface accessibility, and LRR-region regularity to calibrate potentially noisy structure-derived contacts.
@@ -42,24 +43,24 @@ Each protein is represented as a heterogeneous residue graph. Residues are nodes
 | `SURF` | Exposed-surface proximity based on solvent-accessible surface area |
 | `LRR-REGION` | LRR-region connectivity derived from structure-aware LRR annotation |
 
-A lightweight relation scorer learns adaptive weights over these priors, allowing the model to calibrate structural evidence according to the input protein and dataset context.
+A lightweight input-conditioned relation scorer independently calibrates these priors with bounded weights, rather than normalizing them through a softmax across relation channels.
 
 ### 2. Protein-level PPI graph reasoning
 
-After adaptive residue-level prior integration, calibrated residue features are pooled into compact protein-level representations. These representations are then used as node features in a GraphConv-based PPI graph encoder for multi-type interaction prediction.
+After calibrated residue-level prior integration, residue features are pooled into compact protein-level representations. These representations are then used as node features in a GraphConv-based PPI graph encoder. For each candidate pair, the updated protein vectors are combined by element-wise multiplication and passed to an MLP prediction head. Seven logits are converted independently to probabilities with sigmoid, allowing multiple interaction labels for the same pair.
 
 ```text
 Protein sequence + structure
         ↓
 Residue embeddings + structural-prior graph construction
         ↓
-Adaptive relation weighting over SEQ / STR-KNN / STR-DIS / SURF / LRR-REGION
+Bounded input-conditioned calibration over SEQ / STR-KNN / STR-DIS / SURF / LRR-REGION
         ↓
 Residue-to-protein compression
         ↓
 Protein-level GraphConv reasoning
         ↓
-Multi-type PPI prediction
+Pairwise element-wise product → MLP → seven independent sigmoid outputs
 ```
 
 ---
@@ -473,12 +474,12 @@ If you encounter out-of-memory errors, consider reducing:
 If you use this code or dataset, please cite the SPIN-PPI manuscript:
 
 ```bibtex
-@article{spin_ppi_2026,
-  title   = {SPIN-PPI: Adaptive structural prior integration for memory-efficient protein-protein interaction prediction},
-  author  = {Chen, Haowen and Hong, Weihao and Yang, Xinyu and Fu, Xiangzheng},
-  journal = {Bioinformatics},
-  year    = {2026},
-  note    = {Manuscript submitted}
+@unpublished{spin_ppi_2026,
+  title  = {SPIN-PPI: A Structural Prior Integration Network with Bounded Input-Conditioned Calibration for Multi-Type Protein-Protein Interaction Prediction},
+  author = {Chen, Haowen and Hong, Weihao and Zhang, Zhonghui and Yang, Xinyu and Fu, Xiangzheng},
+  year   = {2026},
+  note   = {Unpublished manuscript},
+  url    = {https://github.com/owenhong0331/SPIN-PPI}
 }
 ```
 
