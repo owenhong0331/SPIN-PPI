@@ -1308,8 +1308,8 @@ def main(args):
                 # Log metrics
                 logger.log_epoch(epoch, train_metrics, val_metrics, test_metrics)
                 
-                # 每10个epoch更新一次LRR权重（分离采样逻辑）
-                if epoch % 50 == 0 and epoch > 0 :
+                # 每个epoch更新一次LRR权重（分离采样逻辑）
+                if epoch > 0:
                     # Get PPI indices (batched)
                     ppi_indices_batches = get_ppi_indices_for_lrr_update(
                         ppi_list=ppi_dataset.ppi_list,
