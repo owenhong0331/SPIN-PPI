@@ -6,7 +6,7 @@ The five relations encode sequence adjacency, local structural neighborhoods, di
 
 This repository provides source code, training and inference scripts, configuration files, preprocessing utilities, and instructions for reproducing the experiments reported in the manuscript:
 
-> **SPIN-PPI: A Structural Prior Integration Network with Bounded Input-Conditioned Calibration for Multi-Type Protein–Protein Interaction Prediction**
+> **SPIN-PPI: A Structural Prior Integration Network for Multi-Type Protein–Protein Interaction Prediction**
 
 ---
 
@@ -475,7 +475,7 @@ If you use this code or dataset, please cite the SPIN-PPI manuscript:
 
 ```bibtex
 @unpublished{spin_ppi_2026,
-  title  = {SPIN-PPI: A Structural Prior Integration Network with Bounded Input-Conditioned Calibration for Multi-Type Protein-Protein Interaction Prediction},
+  title  = {SPIN-PPI: A Structural Prior Integration Network for Multi-Type Protein-Protein Interaction Prediction},
   author = {Chen, Haowen and Hong, Weihao and Zhang, Zhonghui and Yang, Xinyu and Fu, Xiangzheng},
   year   = {2026},
   note   = {Unpublished manuscript},
